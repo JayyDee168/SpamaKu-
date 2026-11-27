@@ -1,11 +1,7 @@
 /* ================================================================
-   STYLE.CSS — baju-bajunya Spamaku! 👕
    Bagian 1: splash screen (logo Spamaku!)
    Bagian 2: tema & semua komponen
-
-   Aturan biar neon-nya nggak bikin laptop kentang ngelag:
-   - glow (box-shadow / text-shadow) itu STATIS
-   - yang dianimasiin cuma opacity & transform (dikerjain GPU, enteng)
+P.S perlu ngasih tau anak2 biar nda bingung
    ================================================================ */
 
 
@@ -13,7 +9,7 @@
   --brand-blue: #0A5896;
   --brand-yellow: #F3AD1B;
   --brand-white: #FFFFFF;
-  --splash-bg: #050B14;          /* navy hampir hitam */
+  --splash-bg: #050B14;          /* navy agak ireng */
 
   /* Timeline (ubah di sini) */
   --t-start: 0.3s;               /* jeda sebelum "MADE BY" muncul */
@@ -25,13 +21,13 @@
   --t-out: 0.6s;                 /* durasi fade out */
 }
 
-/* Kunci scroll selama splash tampil */
+/* Kunci scroll pas splash tampil bakat*/
 html.splash-active,
 html.splash-active body {
   overflow: hidden;
 }
 
-/* Kalau sudah pernah tampil di sesi ini, sembunyikan langsung (tanpa kedip) */
+/* Kalau udh tampil di sesi ini, splashnya malu2 uy (tanpa kedip) */
 html.no-splash .splash {
   display: none;
 }
@@ -53,14 +49,14 @@ html.no-splash .splash {
   -webkit-user-select: none;
 }
 
-/* ---------- Tulisan MADE BY (credit itu penting, bestie) ---------- */
+/* ---------- Tulisan MADE BY (credit itu penting, bestie... RAWRRRRR GRRR) ---------- */
 .splash__madeby {
   margin: 0;
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: clamp(0.75rem, 1.6vw, 1rem);
   font-weight: 600;
   letter-spacing: 0.6em;
-  padding-left: 0.6em;           /* imbangi letter-spacing agar tetap di tengah */
+  padding-left: 0.6em;
   color: var(--brand-yellow);
   text-shadow: 0 0 8px rgba(243, 173, 27, 0.6);   /* glow statis */
   opacity: 0;
@@ -102,7 +98,7 @@ html.no-splash .splash {
   opacity: 0;
 }
 
-/* ---------- Animasi splash (jalan setelah logo siap, lihat app.js bagian 1) ---------- */
+/* ---------- Animasi splash (jalan abis logo siap, lihat app.js bagian 1) ---------- */
 .splash.is-playing .splash__madeby {
   animation: splash-fade-in var(--t-text) ease-out var(--t-start) forwards;
 }
@@ -123,7 +119,7 @@ html.no-splash .splash {
   animation: splash-fade-out var(--t-out) ease-in var(--t-hold-until) forwards;
 }
 
-/* Saat di-skip: langsung fade out cepat */
+/* Klo di skip. langsung fade out */
 .splash.is-leaving {
   animation: splash-fade-out 0.3s ease-in forwards !important;
 }
@@ -156,8 +152,8 @@ html.no-splash .splash {
 
 
 /* ================================================================
-   BAGIAN 2: TEMA & KOMPONEN
-   ================================================================ */
+   BAGIAN 2: TEMA & KOMPONEN (PENTING BANGET, YANG GAK MERHATIIN AKU PUKUL)
+   ======================================================================= */
 
 /* ---------- Variabel tema: ganti warna satu website cukup dari sini ---------- */
 :root,
@@ -266,7 +262,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 1rem 0; }
 
 :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
 
-/* ---------- Teks neon ✨ (lampu Malioboro versi CSS) ---------- */
+/* ---------- Teks neon (biar RGB RGB gituloh ya) ---------- */
 .neon {
   color: var(--yellow);
   text-shadow: 0 0 6px var(--glow), 0 0 18px var(--glow);
@@ -293,9 +289,9 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 1rem 0; }
 .brand__logo {
   display: block;
   width: 34px; height: auto;
-  filter: drop-shadow(0 0 6px var(--glow));   /* glow statis, aman buat laptop kentang */
+  filter: drop-shadow(0 0 6px var(--glow));   /* glow statis, aman buat laptop kentang (bukan bermaksud menghina) */
 }
-/* logo putih buat tema gelap, logo hitam buat tema terang. tukeran shift kayak satpam */
+/* logo putih buat tema gelap, logo hitam buat tema terang */
 .brand__logo--terang { display: none; }
 [data-theme="light"] .brand__logo--gelap { display: none; }
 [data-theme="light"] .brand__logo--terang { display: block; filter: none; }
@@ -398,7 +394,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 1rem 0; }
 .modebar-admin { background: var(--yellow); color: var(--on-accent); }
 .modebar a { color: inherit; text-decoration: underline; }
 
-/* ---------- Tombol. btn-neon = tombol paling caper ---------- */
+/* ---------- Tombol. btn-neon = tombol pikmi ---------- */
 .btn {
   position: relative;
   display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
@@ -481,7 +477,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 
 .check { display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; }
 
-/* pilih SATU jenis poin di form event (1 event = 1 jenis poin) */
+/* pilih satu jenis poin di form event (1 event = 1 jenis poin) */
 .kat-pilih { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.6rem; }
 .kat-opsi {
   position: relative;
@@ -663,7 +659,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 .section { margin-top: 4rem; }
 .section-head { text-align: center; margin-bottom: 2rem; }
 
-/* ---------- Progress bar SPAMA (sumber stres sekaligus motivasi) ---------- */
+/* ---------- Progress bar SPAMA (sumber stres sekaligus motivasi anak ATMA) ---------- */
 .progress-list { display: grid; gap: 1.1rem; }
 .progress-row header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.35rem; }
 .progress-row header b { font-size: 0.95rem; }
@@ -706,7 +702,7 @@ html.js .progress__fill.pending { transform: scaleX(0); }
 .ring b { display: block; font-size: 2.2rem; font-family: var(--font-display); line-height: 1; }
 .ring span { font-size: 0.8rem; color: var(--muted); }
 
-/* ---------- Kartu event ala marketplace ---------- */
+/* ---------- Kartu event kyk marketplace ---------- */
 .event-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; }
 .event-card {
   position: relative;
@@ -920,3 +916,19 @@ html.js .reveal.is-visible { opacity: 1; transform: none; }
 
 /* langkah-langkah di kartu kosong (mis. "belum bisa memasang event") */
 .langkah { text-align: left; max-width: 520px; margin: 0.5rem auto 1rem; padding-left: 1.3rem; display: grid; gap: 0.4rem; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* CILUK BAAAAA HAYOO NYARIIN APA?? */
