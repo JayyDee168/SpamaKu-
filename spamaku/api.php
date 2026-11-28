@@ -1,16 +1,12 @@
 <?php
-/* ================================================================
-   API.PHP — pelayan JSON. JavaScript pesen, PHP nganterin datanya.
-     api.php?aksi=landing                       → data halaman utama (index.xhtml)
-     api.php?aksi=cek&field=email&value=a@b.c   → cek username/email udah dipakai belum
-   ================================================================ */
+
 require 'inti.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 $aksi = $_GET['aksi'] ?? '';
 
-// ---------- CEK USERNAME / EMAIL (dipanggil tiap user berhenti ngetik) ----------
+// CEK USERNAME / EMAIL (dipanggil tiap user berhenti ngetik)
 if ($aksi === 'cek') {
     $kolom = $_GET['field'] ?? '';
     $nilai = strtolower(trim($_GET['value'] ?? ''));
@@ -28,10 +24,17 @@ if ($aksi === 'cek') {
 
     $sql = "SELECT 1 FROM pengguna WHERE $kolom = ?";
     $param = [$nilai];
-    if (!empty($_GET['exclude']) && isLogin()) {   // di halaman profil, akun sendiri jangan dihitung
-        $sql .= ' AND id <> ?';
-        $param[] = getPenggunaAktif()['id'];
+
+    if (!empty($_GET['exclude'])) {
+        // Di halaman profil, akun sendiri jangan dihitung sebagai akun lain.
+        $penggunaAktif = getPenggunaAktif();
+
+        if ($penggunaAktif) {
+            $sql .= ' AND id <> ?';
+            $param[] = (int)$penggunaAktif['id'];
+        }
     }
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute($param);
     $terpakai = (bool)$stmt->fetch();
@@ -43,7 +46,7 @@ if ($aksi === 'cek') {
     ], JSON_UNESCAPED_UNICODE));
 }
 
-// ---------- DATA HALAMAN UTAMA ----------
+// DATA HALAMAN UTAMA
 if ($aksi === 'landing') {
     $statistik = $pdo->query("SELECT
         (SELECT COUNT(*) FROM acara WHERE status='disetujui' AND tanggalMulai >= NOW()) AS akanDatang,
@@ -52,8 +55,11 @@ if ($aksi === 'landing') {
         (SELECT COALESCE(SUM(poin),0) FROM acara WHERE status='disetujui' AND tanggalMulai >= NOW()) AS poin")->fetch();
 
     $kategori = array_values(array_map(fn($k) => [
-        'id' => (int)$k['id'], 'nama' => $k['nama'], 'singkatan' => $k['singkatan'],
-        'minimum' => (int)$k['poinMinimum'], 'warna' => $k['warna'],
+        'id' => (int)$k['id'],
+        'nama' => $k['nama'],
+        'singkatan' => $k['singkatan'],
+        'minimum' => (int)$k['poinMinimum'],
+        'warna' => $k['warna'],
     ], getSemuaKategori()));
 
     $baris = $pdo->query(sqlAcara() . " WHERE a.status='disetujui' AND a.tanggalMulai >= NOW() ORDER BY a.tanggalMulai LIMIT 4")->fetchAll();
@@ -70,8 +76,13 @@ if ($aksi === 'landing') {
         'biaya' => formatRupiah((int)$a['biaya']),
         'totalPoin' => (int)$a['poin'],
         'poster' => getUrlPoster($a),
-        'poin' => [['kategori' => (int)$a['idKategori'], 'poin' => (int)$a['poin']]],   // 1 event = 1 jenis poin
-        'keatmajayaan' => $a['jenisKeatmajayaan'] ? $a['jenisKeatmajayaan'] . ($a['susulan'] ? ' · Susulan' : '') : null,
+        'poin' => [[
+            'kategori' => (int)$a['idKategori'],
+            'poin' => (int)$a['poin'],
+        ]],
+        'keatmajayaan' => $a['jenisKeatmajayaan']
+            ? $a['jenisKeatmajayaan'] . ($a['susulan'] ? ' · Susulan' : '')
+            : null,
         'inKeranjang' => in_array((int)$a['id'], $idKeranjang, true),
     ], $baris);
 
